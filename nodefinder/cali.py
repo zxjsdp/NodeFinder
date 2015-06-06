@@ -158,7 +158,7 @@ c, f, >0.3<0.5
 #     # (calibration_info can be: >0.05<0.07, @0.144, >0.6, ...)
 #     # species_name_a, species_name_b, calibration_info
 #
-#     # Add calibration ('>0.05<0.07') to the most common node of c and b
+#     # Add '>0.05<0.07' to the most recent common node of c and b
 #     c, b, >0.05<0.07
 #     a, e, >0.1<0.2
 #     c, f, >0.3<0.5
