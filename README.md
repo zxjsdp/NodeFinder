@@ -8,6 +8,8 @@ Tools for node related operations in phylogenetic analyses
 cali.py
 -------
 
+Do multiple calibrations at the most recent common ancestor node.
+
 ### Requirements
 
 You need Python 2.7 or Python 3.x to run this script.
