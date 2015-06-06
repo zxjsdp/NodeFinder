@@ -8,6 +8,28 @@ Tools for node related operations in phylogenetic analyses
 cali.py
 -------
 
+### Requirements
+
+You need Python 2.7 or Python 3.x to run this script.
+
+    python cali.py
+
+Otherwise:
+
+1. If you do not have Python environment in your computer;
+2. Or if you only have Python 2.6 or older version;
+
+please go to this web page and download the latest version of
+**Single-File Stand-alone Python** 2.7 for Windows:
+
+**Go to Webpage**: <http://www.orbitals.com/programs/pyexe.html>
+
+**Directly Download**: <http://www.orbitals.com/programs/py.exe>
+
+Then run this at command line:
+
+    py.exe cali.py
+
 ### Usage
 
 Put these three files:
@@ -22,7 +44,7 @@ in the same folder, then run this command in command line:
 
 
 
-### `cali.ini` File Syntax:
+### Config File Syntax (`cali.ini`):
 
     # Lines start with '#' will be ignored.
 
@@ -38,16 +60,16 @@ in the same folder, then run this command in command line:
 
 ### Tips:
 
-0. You want to run this program in Windows cmd or Command Line to see
-   outcomes and **error messages**;
+0. You want to run this program at Command Line or Windows cmd to see
+   outcomes and **ERROR messages**;
 1. Tree file should be **Newick** format file (Multi lines are accepted);
-2. If first line is like this: '72  1', it's OK;
-3. Lines start with "#" will be ignored (Considered as comments);
-4. Separate elements in each calibration line with '**,**';
+2. If first line is like this: `72  1`, it's OK;
+3. Lines start with "`#`" will be ignored (Considered as comments);
+4. Separate elements in each calibration line with '`,`';
 5. Each calibration one line;
 6. If calibration at specific node already exists, it will be replaced by
    new one;
-7. A new tree file will be generated. Please check your working dir.
+7. A **new tree file** will be generated. Please check your working dir.
 
 
 
@@ -78,7 +100,7 @@ will generate this config file and gives you informations like this:
     Tips:
         ...
 
-Then modify `cali.ini`:
+Modify `cali.ini`:
 
     # Comments will be ignored
 
@@ -99,7 +121,7 @@ Run this command again at command line to do calibrations:
 
     python cali.py
 
-The we will get a new tree with calibration informations:
+Then we will get a new tree with calibration informations:
 
     ((((a, b), c)>0.05<0.07, (d, e))>0.1<0.2, (f, g))>0.3<0.5;
 
@@ -122,7 +144,7 @@ PLEASE USE SOFTWARES LIKE TreeView TO CHECK THE OUTCOME!!
         +-----------|
                     +-- g
 
-### Informations and Warnings Given by This Program:
+### INFORMATIONs and WARNINGs after Running:
 
 1. Tipical Outcome Information:
 
