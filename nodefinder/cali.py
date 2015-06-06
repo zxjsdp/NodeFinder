@@ -10,7 +10,7 @@
     python cali.py
 """
 
-from __future__ import print_function
+from __future__ import print_function, with_statement
 
 import os
 import re
