@@ -1,6 +1,8 @@
 NodeFinder
 ==========
 
+[![Build Status](https://travis-ci.org/zxjsdp/NodeFinder.svg?branch=master)](https://travis-ci.org/zxjsdp/NodeFinder)
+
 Tools for node related operations in phylogenetic analyses
 
 cali.py
