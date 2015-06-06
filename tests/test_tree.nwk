@@ -1,0 +1,30 @@
+72  5
+
+(Nostoc_azollae_0708,(((((AnaXP35,(AnaJAHN,(Ana1446,
+Anabaena_cylindrica_PCC_7122))),(Nos8941,(((Tri10178,
+Tri10269),((Anabaena_sp._PCC_7108,(A.NMC-1,(Tri2001,AnaMs2)))
+,(Ana001,AnaKVJ17))),(((Nostoc_punctiforme_PCC_73102,
+((((Fis7414,(Calothrix_PCC_6303,Calothrix_PCC_7103)),
+((((Microcoleus_PCC_7113,
+Coleofasciculus_chthonoplastes_PCC_7420),
+(Chroococcidiopsis_thermalis_PCC_7203,Gloeocapsa_PCC_7428)),
+((Chamaesiphon_PCC_6605,Crinalium_epipsammum_PCC_9333),
+(Dactylococcopsis_salina_PCC_8305,(Cyanothece_PCC_7424,
+((Cyanothece_PCC_8801,Cyanothece_PCC_8802),
+(Cyanobacterium_aponinum_PCC_10605,Synechocystis_PCC_6803))))
+)),((((((Prochlorococcus_marinus_MIT_9313,Synechococcus_sp._W
+H_8109),(Prochlorococcus_marinus_MIT_9301,Prochlorococcus_mari
+nus_MIT_9211)),Synechococcus_elongatus_PCC_6301),(Gloeobacter_
+violaceus_PCC_7421,((Ecoli_K12_DH10B,(Chlamydia_trachomatis_4
+34,Spirochaeta_thermophila_DSM_6192)),Met2661))),(Acaryochlori
+s_marina_MBIC11017,(Thermosynechococcus_elongatus_BP-1,Cyanoth
+ece_PCC_7425))),(Synechococcus_PCC_7502,Trichodesmium_erythrae
+um_IMS101)))),(Calothrix_PCC_7507,Cylindrospermum_stagnale_PCC
+_7417)),(NosDe1,(Nostoc_PCC_7107,(Nostoc_PCC_7524,(Nostoc_PCC_
+7120,(((178,177),(175,174)),Anabaena_variabilis_ATCC_29413))))
+))),((Nod7804,Glo14),Cal4356)),(Ana1tu,(AnaBIR2,(((Ana9705,((1
+255,1250),Aph2012)),Aph-flos),(Ana299,Anabaena_90)))))))),Ana0
+8-05),Ana1616),Ana133),Ana1984);
+
+// This is test tree for get_tree_str function.
+# Line starts with information, // or #, and blank lines will be ignored.
