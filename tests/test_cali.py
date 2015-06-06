@@ -5,8 +5,8 @@ import os
 import pytest
 from nodefinder.cali import *
 
-test_dir, _, test_file = os.path.abspath(__file__).rpartition('\\')
-TESTS_DATA_DIR = os.path.join(test_dir, 'data')
+# test_dir, _, test_file = os.path.abspath(__file__).rpartition('\\')
+# TESTS_DATA_DIR = os.path.join(test_dir, 'data')
 
 # Index of each position
 #                        111111111122222222223
@@ -185,8 +185,10 @@ def test_multi_calibration_Cyano(multi_cali_tuple_Cyano):
     assert '>0.5<0.6' in out_str
 
 
+test_cali_ini = os.path.join(os.path.dirname(__file__), 'test_cali.ini')
+
+
 def test_ParseConfig_init():
-    test_cali_ini = os.path.join(TESTS_DATA_DIR, 'test_cali.ini')
     p = ParseConfig(test_cali_ini)
     p.read_ini()
     assert p.cali_lines == ['cyano.nwk',
@@ -197,7 +199,6 @@ def test_ParseConfig_init():
 
 
 def test_ParseConfig_tree_file_name():
-    test_cali_ini = os.path.join(TESTS_DATA_DIR, 'test_cali.ini')
     p = ParseConfig(test_cali_ini)
     p.read_ini()
     # tree_file_name = p.tree_file_name
@@ -206,7 +207,6 @@ def test_ParseConfig_tree_file_name():
 
 
 def test_ParseConfig_tree_file_name_IOError():
-    test_cali_ini = os.path.join(TESTS_DATA_DIR, 'test_cali.ini')
     p = ParseConfig(test_cali_ini)
     p.read_ini()
     p.cali_lines[0] = p.cali_lines[0] + 'no_exist'
@@ -215,7 +215,6 @@ def test_ParseConfig_tree_file_name_IOError():
 
 
 def test_ParseConfig_cali_list():
-    test_cali_ini = os.path.join(TESTS_DATA_DIR, 'test_cali.ini')
     p = ParseConfig(test_cali_ini)
     p.read_ini()
     cali_list = p.cali_list
@@ -228,7 +227,6 @@ def test_ParseConfig_cali_list():
 
 
 def test_ParseConfig_cali_list_ConfigFileSyntaxError():
-    test_cali_ini = os.path.join(TESTS_DATA_DIR, 'test_cali.ini')
     p = ParseConfig(test_cali_ini)
     p.read_ini()
     p.cali_lines[2] = 'AnaMs2, Fis7414, >0.22<0.33, error'
@@ -240,7 +238,7 @@ def test_ParseConfig_cali_list_ConfigFileSyntaxError():
 
 
 def test_get_tree_str():
-    test_tree_nwk = os.path.join(TESTS_DATA_DIR, 'test_tree.nwk')
+    test_tree_nwk = os.path.join(os.path.dirname(__file__), 'test_tree.nwk')
     tree_str = get_tree_str(test_tree_nwk)
     assert tree_str == test_tree_2
 
