@@ -6,8 +6,6 @@ python:
   - "3.4"
   - "3.5"
 
-install:
-    – pip install pytest
+install: – pip install pytest
 
-script:
-    – py.test tests
+script: – py.test tests
