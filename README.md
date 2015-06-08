@@ -12,11 +12,13 @@ Do multiple calibrations at the most recent common ancestor node.
 
 ### Requirements
 
+For Linux, Windows, and Mac OS X users:
+
 You need Python 2.7 or Python 3.x to run this script.
 
     python cali.py
 
-Otherwise:
+Otherwise, For Windows users:
 
 1. If you do not have Python environment in your computer;
 2. Or if you only have Python 2.6 or older version;
