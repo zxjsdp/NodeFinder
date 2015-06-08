@@ -239,15 +239,6 @@ class ConfigFileSyntaxError(SyntaxError):
     pass
 
 
-def double_click_confirm(confirm_info=CONFIRM_INFO):
-    """Keep cmd open after double click script.py and program finishes.
-
-    [Parameters]
-        confirm_info: Display information to user.
-    """
-    raw_input(confirm_info)
-
-
 def clean_elements(orig_list):
     """Strip each element in list and return a new list.
     [Params]
@@ -456,8 +447,6 @@ class ParseConfig(object):
         if len(self.cali_lines) <= 1:
             error_msg = ('There must be more than onecalibration'
                          ' line.\n%s' % USAGE_INFO)
-            # print(error_msg)
-            # double_click_confirm()
             raise ConfigFileSyntaxError(error_msg)
 
     @property
@@ -467,8 +456,6 @@ class ParseConfig(object):
         if not os.path.isfile(_tree_file_name):
             error_msg = ('[ERROR] No such tree file in current dir: %s' %
                          _tree_file_name)
-            # print(error_msg)
-            # double_click_confirm()
             raise IOError(error_msg)
         return _tree_file_name
 
@@ -527,7 +514,6 @@ def main():
                   'and run this program again.')
             print('=' * 53)
             print(USAGE_INFO)
-            # double_click_confirm()
             sys.exit(1)
     c = ParseConfig(CONFIG_FILE)
     c.read_ini()
@@ -543,7 +529,6 @@ def main():
     finally:
         print('[Tree With Calibration]:\n\n', tree_with_cali)
         print('\n' + '=' * 52)
-        # double_click_confirm()
 
 
 if __name__ == '__main__':
