@@ -506,15 +506,19 @@ def write_str_to_file(orig_tree_file_name, str_to_write):
 def main():
     """Main fuction"""
     if not os.path.isfile(CONFIG_FILE):
-        with open(CONFIG_FILE, 'w') as f_ini, open('test.nwk', 'w') as f_nwk:
+        with open(CONFIG_FILE, 'w') as f_ini:
             f_ini.write(INI_FILE_TEMPLATE)
+        with open('test.nwk', 'w') as f_nwk:
             f_nwk.write('((a ,((b, c), (d, e))), (f, g));')
-            print('=' * 53)
-            print('[Config FILE Generated]:\n    Please modify cali.ini '
-                  'and run this program again.')
-            print('=' * 53)
-            print(USAGE_INFO)
-            sys.exit(1)
+        print('=' * 53)
+        print('[Config FILE Generated]:\n    Please modify [cali.ini] '
+              'and run this program again.')
+        print('\n    A test tree file was also generated: [test.nwk]')
+        print('    You can do practices with: [test.nwk] and [cali.ini]')
+        print('        Run this at command line --> python cali.py')
+        print('=' * 53)
+        print(USAGE_INFO)
+        sys.exit(1)
     c = ParseConfig(CONFIG_FILE)
     c.read_ini()
     tree_file_name, calibration_list = c.tree_file_name, c.cali_list
