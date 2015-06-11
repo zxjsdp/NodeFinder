@@ -8,4 +8,6 @@ install:
   - pip install pytest
   - pip install coveralls
 script:
-  - py.test tests -v
+  - py.test tests -v --cov nodefinder
+after_success:
+  - coveralls
