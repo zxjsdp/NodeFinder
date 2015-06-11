@@ -2,6 +2,7 @@ NodeFinder
 ==========
 
 [![Build Status](https://travis-ci.org/zxjsdp/NodeFinder.svg?branch=master)](https://travis-ci.org/zxjsdp/NodeFinder)
+[![Coverage Status](https://coveralls.io/repos/zxjsdp/NodeFinder/badge.svg)](https://coveralls.io/r/zxjsdp/NodeFinder)
 
 Tools for node related operations in phylogenetic analyses
 
