@@ -15,21 +15,21 @@ Do multiple calibrations at the most recent common ancestor node.
 
 For Linux, Windows, and Mac OS X users:
 
-You need Python 2.7 or Python 3.x to run this script.
+You need Python 2.6 or Python 3.x to run this script.
 
     python cali.py
 
 Otherwise, For Windows users:
 
 1. If you do not have Python environment in your computer;
-2. Or if you only have Python 2.6 or older version;
+2. Or if you only have Python version lower than Python 2.6;
 
 please go to this web page and download the latest version of
 **Single-File Stand-alone Python** 2.7 for Windows:
 
 **Go to Webpage**: <http://www.orbitals.com/programs/pyexe.html>
 
-**Directly Download**: <http://www.orbitals.com/programs/py.exe>
+**Directly download py.exe**: <http://www.orbitals.com/programs/py.exe>
 
 Then run this at command line:
 
@@ -93,16 +93,22 @@ will generate this config file and gives you informations like this:
 
     =====================================================
     [Config FILE Generated]:
-        Please modify cali.ini and run this program again.
+        Please modify [cali.ini] and run this program again.
+
+        A test tree file was also generated: [test.nwk]
+        You can do practices with: [test.nwk] and [cali.ini]
+            Run this at command line --> python cali.py
     =====================================================
 
     Usage:
+
+    [cali.ini Syntax]:
         ...
 
-    Example:
+    [Example]:
         ...
 
-    Tips:
+    [Tips]:
         ...
 
 Modify `cali.ini`:
