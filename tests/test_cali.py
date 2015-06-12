@@ -72,6 +72,16 @@ def test_find_right_paren():
     assert index_6 == 29
 
 
+def test_find_first_left_paren():
+    out_index = find_first_left_paren('((a,((b,c),(d,e))),(f,g));', 'c')
+    assert out_index == 5
+
+
+def test_find_first_right_paren():
+    out_index = find_first_right_paren('((a,((b,c),(d,e))),(f,g));', 'd')
+    assert out_index == 15
+
+
 def test_left_side_left_paren():
     index_1 = left_side_left_paren(test_tree_1, 0)
     index_2 = left_side_left_paren(test_tree_1, 1)
