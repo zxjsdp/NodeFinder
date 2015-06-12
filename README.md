@@ -51,30 +51,54 @@ in the same folder, then run this command in command line:
 
 ### Config File Syntax (`cali.ini`):
 
-    # Lines start with '#' will be ignored.
+    // Lines start with # or // will be ignored.
+    [Tree File Name]
 
-    # tree file name
-    tree_file_name.nwk
+        tree_file_name.nwk
 
-    # calibrations
-    name_a, name_b, calibration_infomation_1
-    name_c, name_d, calibration_infomation_2
-    ..., ..., ...
+    [Calibration or Label Infos, One or Multiple]
 
+        name_a, name_b, calibration_infomation_1
+        name_c, name_d, calibration_infomation_2
+        name_a, name_b, clade_label_information
+        name, branch_label_information
+        ..., ..., ...
 
+#### Example One (Do calibrations):
+
+    [Tree File Name]
+
+        test.nwk
+
+    [Calibration or Label Infos, One or Multiple]
+
+        a, b, >0.05<0.07
+        c, d, >0.08<0.09
+
+#### Example Two (Add branch labels or clade labels):
+
+    [Tree File Name]
+
+        test.nwk
+
+    [Calibration or Label Infos, One or Multiple]
+
+        d, e, $1
+        a, #1
 
 ### Tips:
 
-0. You want to run this program at Command Line or Windows cmd to see
-   outcomes and **ERROR messages**;
+0. You want to run this program in Windows cmd or Command Line to see
+   outcomes and **error messages**;
 1. Tree file should be **Newick** format file (Multi lines are accepted);
 2. If first line is like this: `72  1`, it's OK;
-3. Lines start with "`#`" will be ignored (Considered as comments);
-4. Separate elements in each calibration line with '`,`';
-5. Each calibration one line;
-6. If calibration at specific node already exists, it will be replaced by
-   new one;
-7. A **new tree file** will be generated. Please check your working dir.
+3. Lines start with "#", "\\" will be ignored
+   (Considered as comments);
+4. Separate elements in each line with `,`;
+5. Each calibration or branch label or clade label one line;
+6. If calibration or branch label or clade label at specific node already
+   exists, it will be replaced by new one;
+7. A new tree file will be generated. Please check your working dir.
 
 
 
@@ -113,20 +137,30 @@ will generate this config file and gives you informations like this:
 
 Modify `cali.ini`:
 
-    # Comments will be ignored
+    // Comments will be ignored
+    // Newick tree file name
 
-    # Newick tree file name
+    [Tree File Name]
 
-    test.nwk
+        test.nwk
 
-    # Calibrations
-    # (calibration_info can be: >0.05<0.07, @0.144, >0.6, ...)
-    # species_name_a, species_name_b, calibration_info
+    // (Info can be: >0.05<0.07, @0.144, >0.6, #1, $1, "#1", ...)
+    // name_a, name_b, info
+    // Add '>0.05<0.07' to the most recent common node of c and b
 
-    # Add '>0.05<0.07' to the most recent common node of c and b
-    c, b, >0.05<0.07
-    a, e, >0.1<0.2
-    c, f, >0.3<0.5
+    [Calibration or Label Infos, One or Multiple]
+
+    // This is just for test, so we add calibrations and branch labels
+       and clade labels at the same time.
+
+
+         c, b, >0.05<0.07
+         a, e, >0.04<0.06
+         c, f, >0.3<0.5
+         d, e, $1
+         a, #1
+
+    // End
 
 Run this command again at command line to do calibrations:
 
@@ -134,13 +168,13 @@ Run this command again at command line to do calibrations:
 
 Then we will get a new tree with calibration informations:
 
-    ((((a, b), c)>0.05<0.07, (d, e))>0.1<0.2, (f, g))>0.3<0.5;
+    ((((a #1 , b), c)>0.05<0.07, (d, e)$1)>0.1<0.2, (f, g))>0.3<0.5;
 
 And a file named "`test.cali.nwk`" will be genereated.
 
 PLEASE USE SOFTWARES LIKE TreeView TO CHECK THE OUTCOME!!
 
-            +---------- a
+            +---------- a #1
             |
             | >0.1<0.2
         +---|       +-- b
@@ -148,7 +182,7 @@ PLEASE USE SOFTWARES LIKE TreeView TO CHECK THE OUTCOME!!
         |   |   |   +-- c
         |   +---|
         |       |   +-- d
-        |       +---|
+        |       +---| $1
     ----|>0.3<0.5   +-- e
         |
         |           +-- f
@@ -166,6 +200,7 @@ PLEASE USE SOFTWARES LIKE TreeView TO CHECK THE OUTCOME!!
         [ Cali ]:   >0.1<0.2
         [Insert]:   c)>0.05<0.07,(d,e))),(f,g));
         [Insert]:                    ->||<-
+        [Insert]:                  Insert Here
         ----------------------------------------------------
 
         # Comments:
