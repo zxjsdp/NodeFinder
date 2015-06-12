@@ -7,6 +7,13 @@ Next version
 Will be released in the near future...
 
 
+Version v0.1.4
+--------------
+
+BugFix release, released on Jun 12th 2015, Friday
+
+- Fixed one config file parse bug
+
 Version v0.1.3
 --------------
 
