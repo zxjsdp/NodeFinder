@@ -27,22 +27,41 @@ Usage:
 
 [cali.ini Syntax]:
 
-    # Lines start with # or // will be ignored.
 
-    # tree file name
-    tree_file_name.nwk
+    // Lines start with # or // will be ignored.
+    [Tree File Name]
 
-    # calibrations
-    name_a, name_b, calibration_infomation_1
-    name_c, name_d, calibration_infomation_2
-    ..., ..., ...
+        tree_file_name.nwk
 
-[Example]:
+    [Calibration or Label Infos, One or Multiple]
 
-    test.nwk
+        name_a, name_b, calibration_infomation_1
+        name_c, name_d, calibration_infomation_2
+        name_a, name_b, clade_label_information
+        name, branch_label_information
+        ..., ..., ...
 
-    a, b, >0.05<0.07
-    c, d, >0.08<0.09
+[Example One] (Do calibrations):
+
+    [Tree File Name]
+
+        test.nwk
+
+    [Calibration or Label Infos, One or Multiple]
+
+        a, b, >0.05<0.07
+        c, d, >0.08<0.09
+
+[Example Two] (Add branch labels or clade labels):
+
+    [Tree File Name]
+
+        test.nwk
+
+    [Calibration or Label Infos, One or Multiple]
+
+        d, e, $1
+        a, #1
 
 [Tips]:
 
@@ -59,19 +78,17 @@ Usage:
 """
 
 INI_FILE_TEMPLATE = r"""
-#===================================================#
-#    Tree File Name or Path (Only one)
-#===================================================#
+[Tree File Name]
 
-test.nwk
+    test.nwk
 
-#==========================================================#
-#    Calibration Information (One or multiple)
-#==========================================================#
+[Calibration or Label Infos, One or Multiple]
 
-c, b, >0.05<0.07
-a, e, >0.04<0.06
-c, f, >0.3<0.5
+    c, b, >0.05<0.07
+    a, e, >0.04<0.06
+    c, f, >0.3<0.5
+    d, e, $1
+    a, #1
 
 
 #==============================================================================
@@ -100,6 +117,8 @@ c, f, >0.3<0.5
 #     # calibrations
 #     name_a, name_b, calibration_infomation_1
 #     name_c, name_d, calibration_infomation_2
+#     name_a, name_b, clade_label_information
+#     name, branch_label_information
 #     ..., ..., ...
 #
 #
@@ -109,12 +128,13 @@ c, f, >0.3<0.5
 # 0. You want to run this program in Windows cmd or Command Line to see
 #    outcomes and **error messages**;
 # 1. Tree file should be **Newick** format file (Multi lines are accepted);
-# 2. If first line is like this: '72  1', it's OK;
-# 3. Lines start with "#" will be ignored (Considered as comments);
-# 4. Separate elements in each calibration line with '**,**';
-# 5. Each calibration one line;
-# 6. If calibration at specific node already exists, it will be replaced by
-#    new one;
+# 2. If first line is like this: `72  1`, it's OK;
+# 3. Lines start with "#", "\\" will be ignored
+#    (Considered as comments);
+# 4. Separate elements in each line with '**,**';
+# 5. Each calibration or branch label or clade label one line;
+# 6. If calibration or branch label or clade label at specific node already
+#    exists, it will be replaced by new one;
 # 7. A new tree file will be generated. Please check your working dir.
 #
 #
@@ -134,7 +154,11 @@ c, f, >0.3<0.5
 #
 #     =====================================================
 #     [Config FILE Generated]:
-#         Please modify cali.ini and run this program again.
+#         Please modify [cali.ini] and run this program again.
+#
+#         A test tree named [test.nwk] was also generated.
+#         Please use [test.nwk] and default [cali.ini] file to do practices
+#         if you like..
 #     =====================================================
 #
 #     Usage:
@@ -148,34 +172,41 @@ c, f, >0.3<0.5
 #
 # Then modify `cali.ini`:
 #
-#     # Comments will be ignored
+#     // Comments will be ignored
+#     // Newick tree file name
 #
-#     # Newick tree file name
+#     [Tree File Name]
 #
-#     test.nwk
+#         test.nwk
 #
-#     # Calibrations
-#     # (calibration_info can be: >0.05<0.07, @0.144, >0.6, ...)
-#     # species_name_a, species_name_b, calibration_info
+#     // (Info can be: >0.05<0.07, @0.144, >0.6, #1, $1, "#1", ...)
+#     // name_a, name_b, info
+#     // Add '>0.05<0.07' to the most recent common node of c and b
 #
-#     # Add '>0.05<0.07' to the most recent common node of c and b
-#     c, b, >0.05<0.07
-#     a, e, >0.1<0.2
-#     c, f, >0.3<0.5
+#     [Calibration or Label Infos, One or Multiple]
+#
+#          c, b, >0.05<0.07
+#          a, e, >0.04<0.06
+#          c, f, >0.3<0.5
+#          d, e, $1
+#          a, #1
+#
+#     // End
+#
 #
 # Run this command again at command line to do calibrations:
 #
 #     python cali.py
 #
-# The we will get a new tree with calibration informations:
+# The we will get a new tree with calibration informations like this:
 #
-#     ((((a, b), c)>0.05<0.07, (d, e))>0.1<0.2, (f, g))>0.3<0.5;
+#     ((((a #1 , b), c)>0.05<0.07, (d, e)$1)>0.1<0.2, (f, g))>0.3<0.5;
 #
 # And a file named "`test.cali.nwk`" will be genereated.
 #
 # PLEASE USE SOFTWARES LIKE TreeView TO CHECK THE OUTCOME!!
 #
-#             +---------- a
+#             +---------- a #1
 #             |
 #             | >0.1<0.2
 #         +---|       +-- b
@@ -183,7 +214,7 @@ c, f, >0.3<0.5
 #         |   |   |   +-- c
 #         |   +---|
 #         |       |   +-- d
-#         |       +---|
+#         |       +---| $1
 #     ----|>0.3<0.5   +-- e
 #         |
 #         |           +-- f
@@ -199,8 +230,10 @@ c, f, >0.3<0.5
 #         [Name A]:   a
 #         [Name B]:   e
 #         [ Cali ]:   >0.1<0.2
+#
 #         [Insert]:   c)>0.05<0.07,(d,e))),(f,g));
 #         [Insert]:                    ->||<-
+#         [Insert]:                  Insert Here
 #         ----------------------------------------------------
 #
 #         # Comments:
@@ -568,10 +601,9 @@ class ParseConfig(object):
             raise IOError('No ini file "%s" in current dir.' %
                           self.ini_file_name)
         with open(self.ini_file_name, 'r') as _:
-            for line in _:
+            for i, line in enumerate(_):
                 line = line.strip()
-                if line and not line.startswith('#') and\
-                        not line.startswith('//'):
+                if line[0] not in {'#', '//', '['}:
                     self.cali_lines.append(line)
         if len(self.cali_lines) <= 1:
             error_msg = ('There must be more than one calibration'
