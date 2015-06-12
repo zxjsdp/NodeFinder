@@ -628,11 +628,11 @@ class ParseConfig(object):
         with open(self.ini_file_name, 'r') as _:
             for i, line in enumerate(_):
                 line = line.strip()
-                if line[0] not in {'#', '//', '['}:
+                if line.strip() and line[0] not in {'#', '//', '['}:
                     self.cali_lines.append(line)
         if len(self.cali_lines) <= 1:
-            error_msg = ('There must be more than one calibration'
-                         ' lines.\n%s' % USAGE_INFO)
+            error_msg = ('There must be more than one calibration or branch'
+                         'label lines or clade label lines.\n%s' % USAGE_INFO)
             raise ConfigFileSyntaxError(error_msg)
 
     @property
