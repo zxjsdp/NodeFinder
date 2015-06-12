@@ -123,6 +123,10 @@ def tree_cyano_names(request):
     return request.param
 
 
+def test_get_right_index_of_name():
+    assert get_right_index_of_name('((a,((b,c),(ddd,e))),(f,g));', 'ddd') == 15
+
+
 def test_get_insertion_list(tree_cyano_names):
     list_1 = get_insertion_list(test_tree_1, 'a')
     list_2 = get_insertion_list(test_tree_1, 'b')
@@ -143,6 +147,30 @@ def test_single_calibration():
                                '>0.7<0.9')
     print('OUT 2: ', out_2)
     assert out_2 == '((a,((b,c),(d,e)))>0.7<0.9,(f,g));'
+
+
+def test_add_single_branch_label():
+    tree_with_label_1 = '((a,((b #1 ,c),(d,e))),(f,g));'
+    tree_with_label_2 = '((a,((b "#1" ,c),(d,e))),(f,g));'
+    tree_with_label_3 = "((a,((b '#1' ,c),(d,e))),(f,g));"
+
+    out_1 = add_single_branch_label(test_tree_1, 'a', '#1')
+    assert out_1 == '((a #1 ,((b,c),(d,e))),(f,g));'
+    out_2 = add_single_branch_label(test_tree_1, 'a', '"#1"')
+    assert out_2 == '((a "#1" ,((b,c),(d,e))),(f,g));'
+    out_3 = add_single_branch_label(test_tree_1, 'a', "'#1'")
+    assert out_3 == "((a '#1' ,((b,c),(d,e))),(f,g));"
+
+    out_4 = add_single_branch_label(tree_with_label_1, 'b', '#0')
+    assert out_4 == '((a,((b #0 ,c),(d,e))),(f,g));'
+    out_5 = add_single_branch_label(tree_with_label_2, 'b', "'#1'")
+    assert out_5 == "((a,((b '#1' ,c),(d,e))),(f,g));"
+    out_6 = add_single_branch_label(tree_with_label_3, 'b', '"#1"')
+    assert out_6 == '((a,((b "#1" ,c),(d,e))),(f,g));'
+
+    out_7 = add_single_branch_label(test_tree_2, 'Nostoc_azollae_0708', '#1')
+    assert '#1' in out_7
+    assert out_7.find('#1') == 21
 
 
 @pytest.fixture()
@@ -186,6 +214,33 @@ def test_multi_calibration_Cyano(multi_cali_tuple_Cyano):
 
 
 test_cali_ini = os.path.join(os.path.dirname(__file__), 'test_cali.ini')
+test_branch_clade_label = os.path.join(os.path.dirname(__file__),
+                                       'test_branch_clade_label.ini')
+mixed_cali_and_label_ini_file = \
+    os.path.join(os.path.dirname(__file__), 'test_mixed_cali_and_label.ini')
+
+
+def test_multi_calibration_mixed_cali_and_label():
+    p = ParseConfig(mixed_cali_and_label_ini_file)
+    p.read_ini()
+    assert p.cali_lines == ['cyano.nwk',
+                            'Anabaena_cylindrica_PCC_7122, #1',
+                            'Tri10178, Ana08-05, #2',
+                            'AnaMs2, Fis7414, >0.22<0.33',
+                            'Ana1tu, Ana1616, $1']
+    cali_list = p.cali_list
+    assert p.cali_lines[0] == 'cyano.nwk'
+    assert cali_list == [
+        ['Anabaena_cylindrica_PCC_7122', '#1'],
+        ['Tri10178', 'Ana08-05', '#2'],
+        ['AnaMs2', 'Fis7414', '>0.22<0.33'],
+        ['Ana1tu', 'Ana1616', '$1']
+    ]
+    out_tree = multi_calibration(test_tree_2, cali_list)
+    assert '#1' in out_tree
+    assert '#2' in out_tree
+    assert '>0.22<0.33' in out_tree
+    assert '$1' in out_tree
 
 
 def test_ParseConfig_init():
@@ -196,6 +251,15 @@ def test_ParseConfig_init():
                             'AnaMs2, Fis7414, >0.22<0.33',
                             'Cyanothece_PCC_7424, Synechococcus_sp._WH_8109,'
                             ' >0.33<0.44']
+
+
+def test_ParseConfig_init_branch_clade_label():
+    p = ParseConfig(test_branch_clade_label)
+    p.read_ini()
+    assert p.cali_lines == ['cyano.nwk',
+                            'Anabaena_cylindrica_PCC_7122, #1',
+                            'Tri10178, Ana08-05, #2',
+                            'Ana1tu, Ana1616, $1']
 
 
 def test_ParseConfig_tree_file_name():
@@ -226,13 +290,25 @@ def test_ParseConfig_cali_list():
     ]
 
 
+def test_ParseConfig_cali_list_branch_clade_label():
+    p = ParseConfig(test_branch_clade_label)
+    p.read_ini()
+    cali_list = p.cali_list
+    assert len(cali_list) == 3
+    assert cali_list == [
+                            ['Anabaena_cylindrica_PCC_7122', '#1'],
+                            ['Tri10178', 'Ana08-05', '#2'],
+                            ['Ana1tu', 'Ana1616', '$1']
+                        ]
+
+
 def test_ParseConfig_cali_list_ConfigFileSyntaxError():
     p = ParseConfig(test_cali_ini)
     p.read_ini()
     p.cali_lines[2] = 'AnaMs2, Fis7414, >0.22<0.33, error'
     with pytest.raises(ConfigFileSyntaxError):
         p.cali_list
-    p.cali_lines[2] = 'AnaMs2, Fis7414'
+    p.cali_lines[2] = 'AnaMs2'
     with pytest.raises(ConfigFileSyntaxError):
         p.cali_list
 
