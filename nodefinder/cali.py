@@ -419,8 +419,9 @@ def get_right_index_of_name(clean_tree_str, one_name):
     15
     """
     left_index_of_name = clean_tree_str.find(one_name)
-    while clean_tree_str[left_index_of_name] not in {',', ';', ')', '"', "'",
-                                                     '#', '$', '@', '>', '<'}:
+    while clean_tree_str[left_index_of_name] not in set([',', ';', ')', '"',
+                                                         "'", '#', '$', '@',
+                                                         '>', '<']):
         left_index_of_name += 1
     return left_index_of_name
 
@@ -490,7 +491,7 @@ def single_calibration(tree_str, name_a, name_b, cali_info):
                                     current_info))
 
     # No calibration before
-    if clean_tree_str[cali_point] in [',', ';', ')']:
+    if clean_tree_str[cali_point] in set([',', ';', ')']):
         left_part, right_part = clean_tree_str[:cali_point],\
             clean_tree_str[cali_point:]
         clean_str_with_cali = left_part + cali_info + right_part
@@ -504,8 +505,8 @@ def single_calibration(tree_str, name_a, name_b, cali_info):
     # '"':  ">0.05<0.07"
     # '$':  $1
     # ':':  :0.12345
-    elif clean_tree_str[cali_point] in {'>', '<', '@', '0', '1', "'",
-                                        '"', '$', ':'}:
+    elif clean_tree_str[cali_point] in set(['>', '<', '@', '0', '1', "'",
+                                            '"', '$', ':']):
         # ((a,((b,c),(d,e)))>0.3<0.5,(f,g));
         # left_part = '((a,((b,c),(d,e)))'
         # right_part = '>0.3<0.5,(f,g));'
@@ -538,7 +539,7 @@ def add_single_branch_label(tree_str, name_a, branch_label):
 
     # Check is there was something there
     # Nothing there before
-    if clean_tree_str[insertition_point] in {',', ';', ')'}:
+    if clean_tree_str[insertition_point] in set([',', ';', ')']):
         left_part, right_part = clean_tree_str[:insertition_point],\
             clean_tree_str[insertition_point:]
         clean_str_with_cali = left_part + ' %s ' % branch_label + right_part
@@ -552,8 +553,8 @@ def add_single_branch_label(tree_str, name_a, branch_label):
     # '"':  ">0.05<0.07"
     # '$':  $1
     # ':':  :0.12345
-    elif clean_tree_str[insertition_point] in {'>', '<', '@', '0', '1', "'",
-                                               '"', '$', ':', '#'}:
+    elif clean_tree_str[insertition_point] in set(['>', '<', '@', '0', '1',
+                                                   "'", '"', '$', ':', '#']):
         # ((a,((b,c),(d,e)))>0.3<0.5,(f,g));
         # left_part = '((a,((b,c),(d,e)))'
         # right_part = '>0.3<0.5,(f,g));'
@@ -589,8 +590,8 @@ def multi_calibration(tree_str, cali_tuple_list):
                 if name not in tree_str:
                     raise ConfigFileSyntaxError('Name not in tree file:  ',
                                                 name)
-            if cali_or_clade_info[0] not in {'>', '<', '@', '#',
-                                             '$', "'", '"', ':'}:
+            if cali_or_clade_info[0] not in set(['>', '<', '@', '#',
+                                                 '$', "'", '"', ':']):
                 print('\n!!! [Warning]: Is this valid symbel?  %s\n' %
                       cali_or_clade_info)
             tree_str = single_calibration(tree_str, name_a, name_b,
@@ -606,7 +607,7 @@ def multi_calibration(tree_str, cali_tuple_list):
             if name_a not in tree_str:
                 raise ConfigFileSyntaxError('name_a not in tree file:  ',
                                             name_a)
-            if branch_label[0] not in ['@', '#', '$', "'", ':']:
+            if branch_label[0] not in set(['@', '#', '$', "'", ':']):
                 print('\n!!! [Warning]: Is this valid symbel?  %s\n' %
                       branch_label)
             tree_str = add_single_branch_label(tree_str, name_a, branch_label)
@@ -628,7 +629,7 @@ class ParseConfig(object):
         with open(self.ini_file_name, 'r') as _:
             for i, line in enumerate(_):
                 line = line.strip()
-                if line.strip() and line[0] not in {'#', '//', '['}:
+                if line.strip() and line[0] not in set(['#', '//', '[']):
                     self.cali_lines.append(line)
         if len(self.cali_lines) <= 1:
             error_msg = ('There must be more than one calibration or branch'
