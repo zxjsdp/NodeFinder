@@ -66,14 +66,15 @@ Usage:
 [Tips]:
 
     0. You want to run this program in Windows cmd or Command Line to see
-       outcomes and error messages;
-    1. Tree file should be nwk format file (Multi lines are accepted);
-    2. If first line is like this: '72  1', it's OK;
-    3. Lines start with "#" or '//' will be ignored (Considered as comments);
-    4. Separate elements in each calibration line with ',';
-    5. Newline (\n) indicate a new calibration;
-    6. If calibration at specific node already exists, it will be replaced by
-       new one;
+       outcomes and **error messages**;
+    1. Tree file should be **Newick** format file (Multi lines are accepted);
+    2. If first line is like this: `72  1`, it's OK;
+    3. Lines start with "#", "\\" will be ignored
+       (Considered as comments);
+    4. Separate elements in each line with '**,**';
+    5. Each calibration or branch label or clade label one line;
+    6. If calibration or branch label or clade label at specific node already
+       exists, it will be replaced by new one;
     7. A new tree file will be generated. Please check your working dir.
 """
 
@@ -107,21 +108,43 @@ INI_FILE_TEMPLATE = r"""
 #
 #
 #
-# ### `cali.ini` File Syntax:
-#
-#     # Lines start with '#' will be ignored.
-#
-#     # tree file name
-#     tree_file_name.nwk
-#
-#     # calibrations
-#     name_a, name_b, calibration_infomation_1
-#     name_c, name_d, calibration_infomation_2
-#     name_a, name_b, clade_label_information
-#     name, branch_label_information
-#     ..., ..., ...
+# [cali.ini Syntax]:
 #
 #
+#     // Lines start with # or // will be ignored.
+#     [Tree File Name]
+#
+#         tree_file_name.nwk
+#
+#     [Calibration or Label Infos, One or Multiple]
+#
+#         name_a, name_b, calibration_infomation_1
+#         name_c, name_d, calibration_infomation_2
+#         name_a, name_b, clade_label_information
+#         name, branch_label_information
+#         ..., ..., ...
+#
+# [Example One] (Do calibrations):
+#
+#     [Tree File Name]
+#
+#         test.nwk
+#
+#     [Calibration or Label Infos, One or Multiple]
+#
+#         a, b, >0.05<0.07
+#         c, d, >0.08<0.09
+#
+# [Example Two] (Add branch labels or clade labels):
+#
+#     [Tree File Name]
+#
+#         test.nwk
+#
+#     [Calibration or Label Infos, One or Multiple]
+#
+#         d, e, $1
+#         a, #1
 #
 # ### Tips:
 #
@@ -184,6 +207,8 @@ INI_FILE_TEMPLATE = r"""
 #     // Add '>0.05<0.07' to the most recent common node of c and b
 #
 #     [Calibration or Label Infos, One or Multiple]
+#     // This is just for test, so we add calibrations and branch labels
+#        and clade labels at the same time.
 #
 #          c, b, >0.05<0.07
 #          a, e, >0.04<0.06
