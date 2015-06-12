@@ -256,7 +256,7 @@ def clean_elements(orig_list):
 
 def get_clean_tree_str(tree_str):
     """Remove all blanks and return a very clean tree string.
-    >>> get_clean_tree_str(((a ,((b, c), (d, e))), (f, g));)
+    >>> get_clean_tree_str('((a ,((b, c), (d, e))), (f, g));'')
     '((a,((b,c),(d,e))),(f,g));'
     """
     return tree_str.replace(' ', '').replace('\n', '').replace('\t', '')
@@ -311,6 +311,20 @@ def left_side_left_paren(clean_tree_str, left_index_now):
     return left_index_now
 
 
+def get_right_index_of_name(clean_tree_str, one_name):
+    """Get the right index of givin name.
+    #                                      111111111122222222
+    #                            0123456789012345678901234567
+    >>> get_right_index_of_name('((a,((b,c),(ddd,e))),(f,g));', 'ddd')
+    15
+    """
+    left_index_of_name = clean_tree_str.find(one_name)
+    while clean_tree_str[left_index_of_name] not in {',', ';', ')', '"', "'",
+                                                     '#', '$', '@', '>', '<'}:
+        left_index_of_name += 1
+    return left_index_of_name
+
+
 def get_insertion_list(clean_tree_str, name_to_find):
     """Get a list of insertition point index and return it."""
     insertion_list = []
@@ -362,8 +376,9 @@ def single_calibration(tree_str, name_a, name_b, cali_info):
             cali_point = shorter_list[i - 1]
             break
     # print('[Common]:         ', cali_point)
-    print('[Insert]:  ', clean_tree_str[cali_point-20:cali_point+20])
-    print('[Insert]:  ', '                 ->||<-                ')
+    print('\n[Insert]:  ', clean_tree_str[cali_point-20:cali_point+20])
+    print('[Insert]:  ', '                 ->||<-                  ')
+    print('[Insert]:  ', '               Insert Here               ')
 
     # Check if there are duplicate calibration
     current_info = '%s, %s, %s' % (name_a, name_b, cali_info)
@@ -387,7 +402,10 @@ def single_calibration(tree_str, name_a, name_b, cali_info):
     # '1':  1
     # "'":  '>0.05<0.07'
     # '"':  ">0.05<0.07"
-    elif clean_tree_str[cali_point] in ['>', '<', '@', '0', '1', "'", '"']:
+    # '$':  $1
+    # ':':  :0.12345
+    elif clean_tree_str[cali_point] in {'>', '<', '@', '0', '1', "'",
+                                        '"', '$', ':'}:
         # ((a,((b,c),(d,e)))>0.3<0.5,(f,g));
         # left_part = '((a,((b,c),(d,e)))'
         # right_part = '>0.3<0.5,(f,g));'
@@ -406,24 +424,93 @@ def single_calibration(tree_str, name_a, name_b, cali_info):
     return clean_str_with_cali
 
 
+def add_single_branch_label(tree_str, name_a, branch_label):
+    """Add single label right after one name.
+    >>> add_single_branch_label('((a ,((b, c), (d, e))), (f, g));', c, '#1')
+    '((a ,((b, c #1 ), (d, e))), (f, g));'
+    """
+    clean_tree_str = get_clean_tree_str(tree_str)
+    insertition_point = get_right_index_of_name(clean_tree_str, name_a)
+    print('\n[Insert]:  ',
+          clean_tree_str[insertition_point-20:insertition_point+20])
+    print('[Insert]:  ', '                 ->||<-                  ')
+    print('[Insert]:  ', '               Insert Here               ')
+
+    # Check is there was something there
+    # Nothing there before
+    if clean_tree_str[insertition_point] in {',', ';', ')'}:
+        left_part, right_part = clean_tree_str[:insertition_point],\
+            clean_tree_str[insertition_point:]
+        clean_str_with_cali = left_part + ' %s ' % branch_label + right_part
+    # There was calibration there
+    # '>':  >0.05<0.07
+    # '<':  <0.38
+    # '@':  @0.56
+    # '0':  0.5
+    # '1':  1
+    # "'":  '>0.05<0.07'
+    # '"':  ">0.05<0.07"
+    # '$':  $1
+    # ':':  :0.12345
+    elif clean_tree_str[insertition_point] in {'>', '<', '@', '0', '1', "'",
+                                               '"', '$', ':', '#'}:
+        # ((a,((b,c),(d,e)))>0.3<0.5,(f,g));
+        # left_part = '((a,((b,c),(d,e)))'
+        # right_part = '>0.3<0.5,(f,g));'
+        # re will find '>0.3<0.5' part
+        re_find_left_cali = re.compile('^[^,);]+')
+        left_part, right_part = clean_tree_str[:insertition_point],\
+            clean_tree_str[insertition_point:]
+        left_cali = re_find_left_cali.findall(right_part)[0]
+        print('[Label Exists]:          ' + left_cali + '  [- Old]')
+        print('[Label Replaced By]:     ' + branch_label + '  [+ New]')
+        # '>0.3<0.5,(f,g));'.lstrip('>0.3<0.5') will be ',(f,g));'
+        final_right_part = right_part.lstrip(left_cali)
+        clean_str_with_cali = (left_part + ' %s ' % branch_label +
+                               final_right_part)
+    else:
+        raise ValueError('[Error] [Unknown Symbol]: ' +
+                         clean_tree_str[insertition_point])
+    return clean_str_with_cali
+
+
 def multi_calibration(tree_str, cali_tuple_list):
     """Do calibration for multiple calibration requests."""
     for i, each_cali_tuple in enumerate(cali_tuple_list):
-        name_a, name_b, cali_info = each_cali_tuple
-        print('\n\n')
-        print('[%d]:  %s' % (i+1, ', '.join(each_cali_tuple)))
-        print('-' * 52)
-        print('[Name A]:  ', name_a)
-        print('[Name B]:  ', name_b)
-        print('[ Cali ]:  ', cali_info)
-        for name in [name_a, name_b]:
-            if name not in tree_str:
-                raise ConfigFileSyntaxError('Name not in tree file:  ', name)
-        if cali_info[0] not in ['>', '<', '@', '#']:
-            print('\n!!! [Warning]: Is this valid calibration?  %s\n' %
-                  cali_info)
-        tree_str = single_calibration(tree_str, name_a, name_b, cali_info)
-        print('-' * 52)
+        if len(each_cali_tuple) == 3:
+            name_a, name_b, cali_or_clade_info = each_cali_tuple
+            print('\n\n')
+            print('[%d]:  %s' % (i+1, ', '.join(each_cali_tuple)))
+            print('-' * 52)
+            print('[Name A]:  ', name_a)
+            print('[Name B]:  ', name_b)
+            print('[ Info ]:  ', cali_or_clade_info)
+            for name in (name_a, name_b):
+                if name not in tree_str:
+                    raise ConfigFileSyntaxError('Name not in tree file:  ',
+                                                name)
+            if cali_or_clade_info[0] not in {'>', '<', '@', '#',
+                                             '$', "'", '"', ':'}:
+                print('\n!!! [Warning]: Is this valid symbel?  %s\n' %
+                      cali_or_clade_info)
+            tree_str = single_calibration(tree_str, name_a, name_b,
+                                          cali_or_clade_info)
+            print('-' * 52)
+        elif len(each_cali_tuple) == 2:
+            name_a, branch_label = each_cali_tuple
+            print('\n\n')
+            print('[%d]:  %s' % (i+1, ', '.join(each_cali_tuple)))
+            print('-' * 52)
+            print('[ Name ]:  ', name_a)
+            print('[ Info ]:  ', branch_label)
+            if name_a not in tree_str:
+                raise ConfigFileSyntaxError('name_a not in tree file:  ',
+                                            name_a)
+            if branch_label[0] not in ['@', '#', '$', "'", ':']:
+                print('\n!!! [Warning]: Is this valid symbel?  %s\n' %
+                      branch_label)
+            tree_str = add_single_branch_label(tree_str, name_a, branch_label)
+            print('-' * 52)
     return tree_str.replace(',', ', ')
 
 
@@ -468,7 +555,7 @@ class ParseConfig(object):
             if len(elements) not in [2, 3]:
                 error_msg = ('[Calibration lines]: name_a, name_b, cali_info\n'
                              '[Branch label lines]: name, branch_label(#)\n'
-                             '[Clade label lines]:  name_a, name_b, '
+                             '[Clade label lines]: name_a, name_b, '
                              'clade_ladel')
                 raise ConfigFileSyntaxError('Invalid calibration line [%d]: %s'
                                             % (i + 1, line) +
