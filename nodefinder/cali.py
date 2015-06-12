@@ -263,7 +263,18 @@ def get_clean_tree_str(tree_str):
 
 
 def find_right_paren(clean_tree_str, left_index_now):
-    """Find the index of paired right parenthesis ')' of given '('."""
+    """Find the index of paired right parenthesis ')' of given '('.
+    Example:
+        #          1111111111222222222233
+        #01234567890123456789012345678901
+        '((a ,((b, c), (d, e))), (f, g));'
+        #     |              |
+        #     +--------------+
+        #     5              20
+
+        >>> find_right_paren('((a ,((b, c), (d, e))), (f, g));', 5)
+        20
+    """
     stack = []
     paren_index_right = left_index_now
     stack.append('(')
@@ -277,7 +288,16 @@ def find_right_paren(clean_tree_str, left_index_now):
 
 
 def find_first_left_paren(clean_tree_str, one_name):
-    """Find the index of first '(' on the left side of given name."""
+    """Find the index of first '(' on the left side of given name.
+    Example:
+        #                                    1111111111222222
+        #                          01234567890123456789012345
+        #                               ^
+        #                               |
+
+        >>> find_first_left_paren('((a,((b,c),(d,e))),(f,g));', 'c')
+        5
+    """
     index_left = clean_tree_str.find(one_name)
     while clean_tree_str[index_left] != '(':
         index_left -= 1
@@ -285,7 +305,16 @@ def find_first_left_paren(clean_tree_str, one_name):
 
 
 def find_first_right_paren(clean_tree_str, one_name):
-    """Find the index of first ')' on the right side of given name."""
+    """Find the index of first ')' on the right side of given name.
+    Example:
+        #                                    1111111111222222
+        #                          01234567890123456789012345
+        #                                         ^
+        #                                         |
+
+        >>> find_first_right_paren('((a,((b,c),(d,e))),(f,g));', 'd')
+        15
+    """
     index_right = clean_tree_str.find(one_name)
     while clean_tree_str[index_right] != ')':
         index_right += 1
@@ -293,7 +322,18 @@ def find_first_right_paren(clean_tree_str, one_name):
 
 
 def left_side_left_paren(clean_tree_str, left_index_now):
-    """Find first '(' on the left side of current '('."""
+    """Find first '(' on the left side of current '('.
+    Example:
+        #          1111111111222222222233
+        #01234567890123456789012345678901
+        '((a ,((b, c), (d, e))), (f, g));'
+        #     ^                          ^
+        #     |        |
+        #     new      now
+
+        >>> left_side_left_paren('((a,((b,c),(d,e))),(f,g));', 14)
+        5
+    """
     stack = []
     stack.append(')')
     while len(stack) > 0:
@@ -315,6 +355,8 @@ def get_right_index_of_name(clean_tree_str, one_name):
     """Get the right index of givin name.
     #                                      111111111122222222
     #                            0123456789012345678901234567
+    #                                           |
+
     >>> get_right_index_of_name('((a,((b,c),(ddd,e))),(f,g));', 'ddd')
     15
     """
