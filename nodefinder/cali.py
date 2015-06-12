@@ -445,8 +445,8 @@ class ParseConfig(object):
                         not line.startswith('//'):
                     self.cali_lines.append(line)
         if len(self.cali_lines) <= 1:
-            error_msg = ('There must be more than onecalibration'
-                         ' line.\n%s' % USAGE_INFO)
+            error_msg = ('There must be more than one calibration'
+                         ' lines.\n%s' % USAGE_INFO)
             raise ConfigFileSyntaxError(error_msg)
 
     @property
@@ -465,11 +465,14 @@ class ParseConfig(object):
         tmp_cali_list = []
         for i, line in enumerate(self.cali_lines[1:]):
             elements = clean_elements(line.split(','))
-            if len(elements) != 3:
-                raise ConfigFileSyntaxError('Usage: name_a, name_b, '
-                                            'calibration_infomation\n'
-                                            'Invalid calibration line [%d]: %s'
-                                            % (i + 1, line))
+            if len(elements) not in [2, 3]:
+                error_msg = ('[Calibration lines]: name_a, name_b, cali_info\n'
+                             '[Branch label lines]: name, branch_label(#)\n'
+                             '[Clade label lines]:  name_a, name_b, '
+                             'clade_ladel')
+                raise ConfigFileSyntaxError('Invalid calibration line [%d]: %s'
+                                            % (i + 1, line) +
+                                            'Usage:\n\n%s' % error_msg)
             tmp_cali_list.append(elements)
         return tmp_cali_list
 
