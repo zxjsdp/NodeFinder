@@ -6,6 +6,14 @@ NodeFinder
 
 Tools for node related operations in phylogenetic analyses
 
+GUI Version
+-----------
+
+If you are not familiar with console or you prefer Graphical User Interface,
+please refer to [NodeFinderGUI](https://github.com/zxjsdp/NodeFinderGUI).
+
+It's an GUI implementation of NodeFinder with Python tkinter.
+
 cali.py
 -------
 
