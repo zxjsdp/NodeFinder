@@ -320,101 +320,11 @@ def get_clean_tree_str(tree_str):
     return tree_str.replace(' ', '').replace('\n', '').replace('\t', '')
 
 
-def find_right_paren(clean_tree_str, left_index_now):
-    """Find the index of paired right parenthesis ')' of given '('.
-    Example:
-        #          1111111111222222222233
-        #01234567890123456789012345678901
-        '((a ,((b, c), (d, e))), (f, g));'
-        #     |              |
-        #     +--------------+
-        #     5              20
-
-        >>> find_right_paren('((a ,((b, c), (d, e))), (f, g));', 5)
-        20
-    """
-    stack = []
-    paren_index_right = left_index_now
-    stack.append('(')
-    while len(stack) > 0:
-        paren_index_right += 1
-        if clean_tree_str[paren_index_right] == '(':
-            stack.append('(')
-        elif clean_tree_str[paren_index_right] == ')':
-            stack.pop()
-    return paren_index_right
-
-
-def find_first_left_paren(clean_tree_str, one_name):
-    """Find the index of first '(' on the left side of given name.
-    Example:
-        #                                    1111111111222222
-        #                          01234567890123456789012345
-        #                               ^
-        #                               |
-
-        >>> find_first_left_paren('((a,((b,c),(d,e))),(f,g));', 'c')
-        5
-    """
-    index_left = clean_tree_str.find(one_name)
-    while clean_tree_str[index_left] != '(':
-        index_left -= 1
-    return index_left
-
-
-def find_first_right_paren(clean_tree_str, one_name):
-    """Find the index of first ')' on the right side of given name.
-    Example:
-        #                                    1111111111222222
-        #                          01234567890123456789012345
-        #                                         ^
-        #                                         |
-
-        >>> find_first_right_paren('((a,((b,c),(d,e))),(f,g));', 'd')
-        15
-    """
-    index_right = clean_tree_str.find(one_name)
-    while clean_tree_str[index_right] != ')':
-        index_right += 1
-    return index_right
-
-
-def left_side_left_paren(clean_tree_str, left_index_now):
-    """Find first '(' on the left side of current '('.
-    Example:
-        #          1111111111222222222233
-        #01234567890123456789012345678901
-        '((a ,((b, c), (d, e))), (f, g));'
-        #     ^                          ^
-        #     |        |
-        #     new      now
-
-        >>> left_side_left_paren('((a,((b,c),(d,e))),(f,g));', 14)
-        5
-    """
-    stack = []
-    stack.append(')')
-    while len(stack) > 0:
-        if left_index_now == 0:
-            return left_index_now
-        left_index_now -= 1
-        if clean_tree_str[left_index_now] == ')':
-            stack.append(')')
-        elif clean_tree_str[left_index_now] == '(':
-            if len(stack) == 1:
-                return left_index_now
-            stack.pop()
-        else:
-            continue
-    return left_index_now
-
-
 def get_right_index_of_name(clean_tree_str, one_name):
     """Get the right index of givin name.
     #                                      111111111122222222
     #                            0123456789012345678901234567
     #                                           |
-
     >>> get_right_index_of_name('((a,((b,c),(ddd,e))),(f,g));', 'ddd')
     15
     """
@@ -426,42 +336,32 @@ def get_right_index_of_name(clean_tree_str, one_name):
     return left_index_of_name
 
 
-def get_insertion_list(clean_tree_str, name_to_find):
-    """Get a list of insertition point index and return it."""
+def get_insertion_list(clean_tree_str, name):
+    """Get insertion list
+    """
     insertion_list = []
-    left_index_now = clean_tree_str.find(name_to_find) - 1
-    if clean_tree_str[left_index_now] != '(' and\
-            clean_tree_str[left_index_now] == ',':
-        index_right_paren = find_first_right_paren(
-            clean_tree_str, name_to_find)
-        # insertion_list.append(index_right_paren+1)
-        left_index_now = index_right_paren
-    else:
-        left_index_now = clean_tree_str.find(name_to_find) - 1
-        insertion_list.append(
-            find_right_paren(clean_tree_str, left_index_now)+1)
-    # print(left_index_now)
-    while left_index_now >= 0:
-        if left_index_now == 0:
-            # final_point = find_right_paren(clean_tree_str, left_index_now)
-            # print('Final point: ', final_point)
-            # insertion_list.append(final_point + 1)
-            # print('[Final Insertion List]: ', name_to_find,
-            #       '\n\t\t\t', insertion_list)
-            return insertion_list
-        left_index_now = left_side_left_paren(clean_tree_str, left_index_now)
-        # print('new index: %d' % left_index_now)
-        insertion_list.append(
-            find_right_paren(clean_tree_str, left_index_now) + 1)
-        # print('Insertion list now: ', insertion_list)
+    current_index = clean_tree_str.find(name)
+    stack = []
+    str_len = len(clean_tree_str)
+    while current_index < str_len:
+        if clean_tree_str[current_index] == '(':
+            stack.append('(')
+        elif clean_tree_str[current_index] == ')':
+            if not stack:
+                insertion_list.append(current_index + 1)
+            else:
+                stack.pop()
+        current_index += 1
+
     return insertion_list
 
 
-def single_calibration(tree_str, name_a, name_b, cali_info):
-    """Do single calibration. If calibration exists, replace it."""
-    clean_tree_str = get_clean_tree_str(tree_str)
+def get_index_of_tmrca(clean_tree_str, name_a, name_b):
+    """Get index of the most recent common ancestor"""
     insertion_list_a = get_insertion_list(clean_tree_str, name_a)
     insertion_list_b = get_insertion_list(clean_tree_str, name_b)
+    # print(insertion_list_a)
+    # print(insertion_list_b)
     insertion_list_a, insertion_list_b = insertion_list_a[::-1],\
         insertion_list_b[::-1]
     shorter_list = insertion_list_a if len(insertion_list_a) <\
@@ -476,17 +376,26 @@ def single_calibration(tree_str, name_a, name_b, cali_info):
         if shorter_list[i] != longer_list[i]:
             cali_point = shorter_list[i - 1]
             break
-    # print('[Common]:         ', cali_point)
+    print('[Common]:  ', cali_point)
     print('\n[Insert]:  ', clean_tree_str[cali_point-20:cali_point+20])
     print('[Insert]:  ', '                 ->||<-                  ')
     print('[Insert]:  ', '               Insert Here               ')
+
+    return cali_point
+
+
+def single_calibration(tree_str, name_a, name_b, cali_info):
+    """Do single calibration. If calibration exists, replace it."""
+    clean_tree_str = get_clean_tree_str(tree_str)
+    cali_point = get_index_of_tmrca(clean_tree_str, name_a, name_b)
 
     # Check if there are duplicate calibration
     current_info = '%s, %s, %s' % (name_a, name_b, cali_info)
     if cali_point not in _insertion_list_point_dict:
         _insertion_list_point_dict[cali_point] = current_info
     else:
-        print('\n!!! [Warning]   Duplicate calibration:\n[Exists]:   %s\n'
+        print('\n[Warning]   Duplicate calibration:           [ !!! ]')
+        print('[Exists]:   %s\n'
               '[ Now  ]:   %s\n' % (_insertion_list_point_dict[cali_point],
                                     current_info))
 
