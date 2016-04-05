@@ -6,6 +6,12 @@ Next version
 
 Will be released in the near future...
 
+Version v0.1.5
+--------------
+
+Released on Jun 12th 2015, Friday
+
+- Remove unnecessary logic, improve performance
 
 Version v0.1.4
 --------------
