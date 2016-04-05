@@ -57,46 +57,6 @@ def test_get_clean_tree_str():
     assert clean_tree_str == '((a,((b,c),(d,e))),(f,g));'
 
 
-def test_find_right_paren():
-    index_1 = (find_right_paren(test_tree_1, 0))
-    index_2 = (find_right_paren(test_tree_1, 1))
-    index_3 = (find_right_paren(test_tree_1, 5))
-    index_4 = (find_right_paren(test_tree_1, 6))
-    index_5 = (find_right_paren(test_tree_1, 14))
-    index_6 = (find_right_paren(test_tree_1, 24))
-    assert index_1 == 30
-    assert index_2 == 21
-    assert index_3 == 20
-    assert index_4 == 11
-    assert index_5 == 19
-    assert index_6 == 29
-
-
-def test_find_first_left_paren():
-    out_index = find_first_left_paren('((a,((b,c),(d,e))),(f,g));', 'c')
-    assert out_index == 5
-
-
-def test_find_first_right_paren():
-    out_index = find_first_right_paren('((a,((b,c),(d,e))),(f,g));', 'd')
-    assert out_index == 15
-
-
-def test_left_side_left_paren():
-    index_1 = left_side_left_paren(test_tree_1, 0)
-    index_2 = left_side_left_paren(test_tree_1, 1)
-    index_3 = left_side_left_paren(test_tree_1, 5)
-    index_4 = left_side_left_paren(test_tree_1, 6)
-    index_5 = left_side_left_paren(test_tree_1, 14)
-    index_6 = left_side_left_paren(test_tree_1, 24)
-    assert index_1 == 0
-    assert index_2 == 0
-    assert index_3 == 1
-    assert index_4 == 5
-    assert index_5 == 5
-    assert index_6 == 0
-
-
 @pytest.fixture(params=[
     "Nostoc_azollae_0708", "AnaXP35", "AnaJAHN", "Ana1446",
     "Anabaena_cylindrica_PCC_7122",
