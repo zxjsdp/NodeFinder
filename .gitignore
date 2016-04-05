@@ -64,3 +64,6 @@ venv*
 
 # Others
 _mailinglist
+
+# Pycharm
+.idea
